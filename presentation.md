@@ -1,11 +1,11 @@
 <br>
 
-## *Move Over Free Monads:*
-## Make Way for Free Applicatives! 
+# *Move Over Free Monads:*
+# *Make Way for Free Applicatives!*
 
-### *John A. De Goes — @jdegoes*
+### **John A. De Goes — @jdegoes**
 
-<http://github.com/jdegoes/scalaworld-2015>
+### **<http://github.com/jdegoes/scalaworld-2015>**
 
 --- 
 
@@ -30,6 +30,26 @@
 		  |     \ The algebra of the program
 		  |
      A program
+```
+
+--- 
+
+# Free Monads: The Program Perspective
+
+```scala
+sealed trait Console[A]
+case class ReadLine [A](value: String -> A) extends Console[A]
+case class PrintLine[A](line: String, value: A) extends Console[A]
+...
+type Dsl[A] = Free[Console, A]
+
+def readLine               : Dsl[String] = ReadLine(identity)
+def printLine(line: String): Dsl[Unit]   = PrintLine(line, ())
+
+val program = for {
+  line <- readLine
+  _    <- printLine("You wrote: " + line)
+} yield ()
 ```
 
 --- 

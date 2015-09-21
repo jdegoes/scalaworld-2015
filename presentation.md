@@ -145,6 +145,12 @@ sealed trait FreeAp[F[_], A]
 
 ---
 
+# *Confree: Configuration Library*
+
+**Can we build an Applicative language for describing the configuration needs of our application?**
+
+---
+
 # Confree: Configuration Library
 
 ## *Algebra*[^1]

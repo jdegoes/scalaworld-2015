@@ -1,6 +1,11 @@
-## Move Over Free Monads: Make Way for Free Applicatives! 
+<br>
+
+## *Move Over Free Monads:*
+## Make Way for Free Applicatives! 
 
 ### *John A. De Goes — @jdegoes*
+
+<http://github.com/jdegoes/scalaworld-2015>
 
 --- 
 
@@ -53,7 +58,7 @@ Monads embody the essence of *sequential computation*: a program can *depend* on
 
 # *The Trouble with Free Monads*
 
-The structure of monadic programs is *dynamic*. `Free` monad programs can only be interpreted, not *introspected* and *transformed* prior to interpretation.
+The structure of monadic programs is *dynamic*. `Free` monad programs can _only_ be interpreted, not *introspected* and *transformed* prior to interpretation.
 
 ```scala
 def bind[A, B](fa: F[A])(f: A => F[B]): F[B]
@@ -88,7 +93,7 @@ No program depends on any runtime value: the structure is *static*.
 
 ---
 
-# Aside: *Applicative Usage*
+# BUT....
 
 Applicatives are, obviously, *strictly less powerful* than Monads.
 
@@ -106,9 +111,10 @@ Static structure has a _cost_.
 
 # *Free Applicatives*
 
-1. Record the structure of applicative composition.
-2. Interpret it later in any way.
-3. Implemented as `FreeAp` in Scalaz.
+* Record the _structure_ of applicative composition.
+* Interpret it later in _any_ way.
+
+<br>
 
 ```scala
 sealed trait FreeAp[F[_], A]
@@ -121,7 +127,7 @@ sealed trait FreeAp[F[_], A]
 
 # Confree: Configuration Library
 
-## *Algebra*
+## *Algebra*[^1]
 
 ```scala
 object algebra {
@@ -132,9 +138,11 @@ object algebra {
   case class ConfigPort  [A](field: String, value: Int     => A) extends ConfigF[A]
   case class ConfigServer[A](field: String, value: String  => A) extends ConfigF[A]
   case class ConfigFile  [A](field: String, value: String  => A) extends ConfigF[A]
-  case class ConfigSub   [A](field: String, value: FreeAp[ConfigF, A])   extends ConfigF[A]
+  case class ConfigSub   [A](field: String, value: FreeAp[ConfigF, A]) extends ConfigF[A]
 }
 ```
+
+[^1]: See Appendix A.
 
 ---
 
@@ -291,24 +299,11 @@ def genHelp[A](config: Dsl[A]): String = {
 
 ---
 
-# *Expressive Power of Free Applicatives*
-
- * Parsers — with lookahead!
- * Codecs
- * Simple programs (`Alt` for choice)
- * ???
+# YUCK!!!!!!!
 
 ---
 
-# *Intuition for Free Functor Hierarchy*
-
- * Free Functors: Programs that Change Values
- * Free Monads: Programs that Build Programs
- * Free Applicatives: Programs that Build Data
-
----
-
-# Finally Tagless: Pain-Free Free
+# Finally Tagless: Pain-Free(Ap)
 
 ```scala
 object algebra {
@@ -326,7 +321,7 @@ object algebra {
 
 ---
 
-# Finally Tagless: Pain-Free Free
+# Finally Tagless: Pain-Free(Ap)
 
 ```scala
 object dsl {
@@ -355,7 +350,7 @@ object dsl {
 
 ---
 
-# Finally Tagless: Pain-Free Free
+# Finally Tagless: Pain-Free(Ap)
 
 ```scala
 def program =
@@ -368,7 +363,7 @@ def program =
 
 ---
 
-# Finally Tagless: Pain-Free Free
+# Finally Tagless: Pain-Free(Ap)
 
 ```scala
 def print[A](p: Dsl[A]): String = {
@@ -392,7 +387,7 @@ def print[A](p: Dsl[A]): String = {
 
 ---
 
-# Finally Tagless: Pain-Free Free
+# Finally Tagless: Pain-Free(Ap)
 
 ```scala
 def evaluate[A](p: Dsl[A]): A = {
@@ -428,10 +423,48 @@ def evaluate[A](p: Dsl[A]): A = {
 
 ---
 
+# *Intuition for Free Functor Hierarchy*
+
+ * Free Functors: Programs that Change Values
+ * *Free Applicatives: Programs that Build Data*
+ * Free Monads: Programs that Build Programs
+
+---
+
+# *Expressive Power of Free Applicatives*
+
+ * Parsers - Auto-complete, optimization, & even lookahead!
+ * Codecs
+ * Simple programs
+ * Static "Runtime Branching" - `Alternative`, fixed equivalence
+ * ???
+
+---
+
+<br>
+
 # THANK YOU!
 
 ### *John A. De Goes — @jdegoes*
 
-For really lame but working examples:
+<http://github.com/jdegoes/scalaworld-2015>
 
-*<http://github.com/jdegoes/scalaworld-2015>*
+---
+
+# Appendix A: GADTs in Scala
+
+```scala
+sealed trait ConfigF[A]
+
+case class ConfigInt   (field: String) extends ConfigF[Int]
+case class ConfigFlag  (field: String) extends ConfigF[Boolean]
+case class ConfigPort  (field: String) extends ConfigF[Int]
+case class ConfigServer(field: String) extends ConfigF[String]
+case class ConfigFile  (field: String) extends ConfigF[String]
+case class ConfigSub   [A](field: String, value: FreeAp[ConfigF, A])   extends ConfigF[A]
+
+def fail[A](v: ConfigF[A]) = {
+  case ConfigInt(f) => // A must be Int!
+  ...
+}
+```

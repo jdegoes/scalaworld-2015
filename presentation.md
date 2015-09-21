@@ -423,14 +423,6 @@ def evaluate[A](p: Dsl[A]): A = {
 
 ---
 
-# *Intuition for Free Functor Hierarchy*
-
- * Free Functors: Programs that Change Values
- * *Free Applicatives: Programs that Build Data*
- * Free Monads: Programs that Build Programs
-
----
-
 # *Expressive Power of Free Applicatives*
 
  * Parsers - Auto-complete, optimization, & even lookahead!
@@ -438,6 +430,14 @@ def evaluate[A](p: Dsl[A]): A = {
  * Simple programs
  * Static "Runtime Branching" - `Alternative`, fixed equivalence
  * ???
+
+---
+
+# *Intuition for Free Functor Hierarchy*
+
+ * Free Functors: Programs that Change Values
+ * *Free Applicatives: Programs that Build Data*
+ * Free Monads: Programs that Build Programs
 
 ---
 
